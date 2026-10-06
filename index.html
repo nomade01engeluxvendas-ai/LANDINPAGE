@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f4c81" />
+  <meta name="description" content="Central Rápida NFS-e 2026 — consulta operacional, organização e apoio ao dia a dia." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Central Rápida NFS-e 2026</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">NF</div>
+      <div>
+        <strong>Central Rápida NFS-e</strong>
+        <span>2026 • bônus operacional</span>
+      </div>
+    </div>
+    <button id="installBtn" class="ghost hidden">Instalar app</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">CONSULTA RÁPIDA • MOBILE FIRST</span>
+        <h1>Resolva sua rotina de NFS-e em poucos toques.</h1>
+        <p>Emissão, consulta, cancelamento, substituição, erros, clientes, checklist e controle mensal em um só lugar.</p>
+      </div>
+      <a class="primary" href="https://www.nfse.gov.br/" target="_blank" rel="noopener">Abrir Emissor Nacional</a>
+    </section>
+
+    <section class="search-wrap">
+      <input id="globalSearch" type="search" placeholder="Busque: cancelar, erro, cliente, valor..." autocomplete="off" />
+    </section>
+
+    <nav class="tabs" aria-label="Seções do aplicativo">
+      <button class="tab active" data-view="inicio">Início</button>
+      <button class="tab" data-view="guias">20 guias</button>
+      <button class="tab" data-view="notas">Notas</button>
+      <button class="tab" data-view="clientes">Clientes</button>
+      <button class="tab" data-view="checklists">Checklists</button>
+    </nav>
+
+    <section id="inicio" class="view active">
+      <div class="section-title"><div><span class="eyebrow">ATALHOS</span><h2>O que você precisa fazer?</h2></div></div>
+      <div id="quickActions" class="quick-grid"></div>
+
+      <div class="section-title"><div><span class="eyebrow">RESUMO</span><h2>Seu controle local</h2></div></div>
+      <div class="stats">
+        <article><span>Notas cadastradas</span><strong id="statNotas">0</strong></article>
+        <article><span>Total emitido</span><strong id="statValor">R$ 0,00</strong></article>
+        <article><span>Clientes</span><strong id="statClientes">0</strong></article>
+        <article><span>Pendências</span><strong id="statPendencias">0</strong></article>
+      </div>
+
+      <div class="two-col">
+        <article class="panel">
+          <div class="panel-head"><div><span class="eyebrow">ASSISTENTE</span><h3>Deu erro no emissor?</h3></div></div>
+          <label for="errorType">Escolha o tipo de problema</label>
+          <select id="errorType">
+            <option value="">Selecione...</option>
+            <option value="acesso">Acesso / sessão</option>
+            <option value="tomador">Dados do tomador</option>
+            <option value="servico">Serviço / tributação</option>
+            <option value="valores">Valores / campos obrigatórios</option>
+            <option value="rejeicao">NFS-e rejeitada / não concluída</option>
+            <option value="persistente">Erro persistente / sistema indisponível</option>
+          </select>
+          <div id="errorAdvice" class="advice muted">Selecione uma opção para ver a orientação.</div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head"><div><span class="eyebrow">SEGURANÇA</span><h3>Antes de emitir</h3></div></div>
+          <ul class="clean-list">
+            <li>Confira CPF/CNPJ e dados do cliente.</li>
+            <li>Confirme serviço, município e código aplicável.</li>
+            <li>Revise valor, descontos e retenções.</li>
+            <li>Leia o resumo final antes de confirmar.</li>
+          </ul>
+          <button class="secondary" data-open-guide="4">Abrir checklist completo</button>
+        </article>
+      </div>
+
+      <article class="notice">
+        <strong>Importante</strong>
+        <p>Este app é material de apoio e organização. Regras fiscais podem variar por município, enquadramento e operação. Em caso de dúvida, confirme no Emissor Nacional, legislação aplicável e com seu contador.</p>
+      </article>
+    </section>
+
+    <section id="guias" class="view">
+      <div class="section-title"><div><span class="eyebrow">CONTEÚDO PRINCIPAL</span><h2>20 mapas em formato de consulta</h2></div></div>
+      <div id="guideGrid" class="guide-grid"></div>
+    </section>
+
+    <section id="notas" class="view">
+      <div class="section-title"><div><span class="eyebrow">CONTROLE MENSAL</span><h2>Minhas NFS-e</h2></div><button id="exportCsv" class="ghost">Exportar CSV</button></div>
+      <form id="noteForm" class="form-card">
+        <div class="form-grid">
+          <label>Número da NFS-e<input name="numero" required placeholder="Ex.: 123456" /></label>
+          <label>Data<input name="data" type="date" required /></label>
+          <label>Cliente<input name="cliente" required placeholder="Nome ou razão social" /></label>
+          <label>Serviço<input name="servico" required placeholder="Serviço prestado" /></label>
+          <label>Valor (R$)<input name="valor" type="number" min="0" step="0.01" required placeholder="0,00" /></label>
+          <label>Status<select name="status"><option>Emitida</option><option>Cancelada</option><option>Substituída</option><option>Pendente</option></select></label>
+        </div>
+        <label>Observações<textarea name="obs" rows="2" placeholder="Informações úteis para conferência..."></textarea></label>
+        <button class="primary" type="submit">Salvar no controle</button>
+      </form>
+      <div id="notesList" class="records"></div>
+    </section>
+
+    <section id="clientes" class="view">
+      <div class="section-title"><div><span class="eyebrow">CADASTRO RÁPIDO</span><h2>Clientes e serviços</h2></div><button id="backupBtn" class="ghost">Backup</button></div>
+      <form id="clientForm" class="form-card">
+        <div class="form-grid">
+          <label>Nome / razão social<input name="nome" required /></label>
+          <label>CPF / CNPJ<input name="documento" /></label>
+          <label>E-mail<input name="email" type="email" /></label>
+          <label>Município<input name="municipio" /></label>
+          <label>Código do serviço<input name="codigo" /></label>
+          <label>Valor usual (R$)<input name="valor" type="number" min="0" step="0.01" /></label>
+        </div>
+        <label>Descrição padrão do serviço<textarea name="descricao" rows="2"></textarea></label>
+        <label>Observações<textarea name="obs" rows="2"></textarea></label>
+        <button class="primary" type="submit">Salvar cliente</button>
+      </form>
+      <input id="restoreInput" class="hidden" type="file" accept="application/json" />
+      <button id="restoreBtn" class="secondary">Restaurar backup</button>
+      <div id="clientsList" class="records"></div>
+    </section>
+
+    <section id="checklists" class="view">
+      <div class="section-title"><div><span class="eyebrow">ROTINA</span><h2>Checklists práticos</h2></div></div>
+      <div id="checklistArea" class="checklists"></div>
+    </section>
+  </main>
+
+  <div id="guideModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button id="closeModal" class="modal-close" aria-label="Fechar">×</button>
+      <span id="modalKicker" class="eyebrow"></span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalSummary" class="lead"></p>
+      <div id="modalSteps"></div>
+      <div id="modalTip" class="tip"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Central Rápida NFS-e 2026 • dados do controle salvos apenas neste dispositivo.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
